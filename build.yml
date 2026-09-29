@@ -1,0 +1,58 @@
+# Compila el .exe y el instalador en un servidor Windows de GitHub y los publica
+# como "Release" descargable. Se activa al subir una etiqueta (git tag v1.0.0 && git push --tags)
+# o manualmente desde la pestaña Actions.
+name: Build installer
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ícono y modelo de voz
+        run: |
+          python tools/make_icon.py
+          python tools/download_model.py
+
+      - name: Compilar con PyInstaller
+        run: pyinstaller --noconfirm jarvis.spec
+
+      - name: Instalar Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Crear instalador
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\jarvis.iss'
+
+      # --- Firma de código (recomendado; ver LEEME.md). Descomentar cuando tengas certificado ---
+      # - name: Firmar instalador
+      #   run: |
+      #     signtool sign /f cert.pfx /p "${{ secrets.CERT_PASSWORD }}" /fd SHA256 `
+      #       /tr http://timestamp.digicert.com /td SHA256 dist_installer\*.exe
+
+      - name: Hash SHA-256
+        run: Get-FileHash dist_installer\*.exe -Algorithm SHA256 | Out-File dist_installer\SHA256.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Jarvis-Setup
+          path: dist_installer/*
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist_installer/*
