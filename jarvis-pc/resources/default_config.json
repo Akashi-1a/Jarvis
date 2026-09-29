@@ -1,0 +1,38 @@
+{
+  "atajo": "ctrl+alt+j",
+  "hablar_respuestas": true,
+  "saludo_inicial": true,
+  "segundos_max_escucha": 8,
+  "modelo_vosk": "vosk-model-small-es-0.42",
+  "dispositivo_microfono": null,
+
+  "aliases": {
+    "mis juegos": "Steam",
+    "office": ["Word", "Excel", "PowerPoint", "Outlook"]
+  },
+
+  "apps": {
+    "incluir_tienda": true,
+    "escanear_program_files": true,
+    "segundos_espera_cierre": 5,
+    "confirmar_antes_de_cerrar": [
+      "winword", "excel", "powerpnt", "onenote", "code", "notepad", "notepad++",
+      "devenv", "pycharm64", "idea64", "sublime_text", "acrobat", "photoshop"
+    ],
+    "protegidas": [
+      "explorer", "winlogon", "csrss", "wininit", "services", "lsass", "svchost",
+      "system", "dwm", "taskmgr", "msmpeng", "nissrv", "securityhealthsystray",
+      "securityhealthservice", "python", "pythonw", "jarvis"
+    ],
+    "palabras_antivirus": [
+      "antivirus", "defender", "kaspersky", "avast", "avg", "norton", "mcafee",
+      "bitdefender", "eset", "malwarebytes", "sophos"
+    ]
+  },
+
+  "spotify": {
+    "client_id": "",
+    "redirect_uri": "http://127.0.0.1:8888/callback",
+    "paso_volumen": 10
+  }
+}
